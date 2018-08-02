@@ -25,12 +25,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 
+const swipl = require('swipl');
+swipl.call('use_module(library(semweb/turtle))');
+swipl.call('use_module(library(semweb/rdf_http_plugin))');
+swipl.call('use_module(library(semweb/rdf_db))');
+//swipl.call("rdf_load('https://www.dropbox.com/s/33v1zze5fpbmnzh/model.ttl?raw=1', [format('turtle'), register_namespaces(false), base_uri('http://anonymous.org/vocab/'), graph('http://anonymous.orgvocab')])");
+swipl.call('rdf_load(\'https://www.dropbox.com/s/33v1zze5fpbmnzh/model.ttl?raw=1\', [format(\'turtle\'), register_namespaces(false), base_uri(\'http://anonymous.org/vocab/\'), graph(\'http://anonymous.orgvocab\')])');
+
+/*if (ret) {
+    console.log(`Variable X value is: ${ret.X}`);
+} else {
+    console.log('Call failed.');
+}
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
-});
+});*/
 
 // error handler
 app.use(function(err, req, res, next) {
