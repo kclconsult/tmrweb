@@ -23,7 +23,7 @@ show_drug(Request) :-
         member(method(post), Request), !,
         http_read_data(Request, Data, []),
         format('Content-type: text/plain~n~n', []),
-	rdf('http://anonymous.org/data/RecOA-HT-DB-Diuretic', vocab:'aboutExecutionOf', DrugAdministration),
-	rdf('http://anonymous.org/data/ActAdministerThiazide', vocab:'administrationOf', Drug),
+	rdf(Data, vocab:'aboutExecutionOf', DrugAdministration),
+	rdf(DrugAdministration, vocab:'administrationOf', Drug),
         format(Drug).
 	
