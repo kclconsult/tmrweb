@@ -7,6 +7,7 @@
 
 :- http_handler(root(interactions), show_interactions, []).     % (1)
 :- http_handler(root(drug), show_drug, []).
+:- http_handler(root(drugadministration), show_drug_administration, []).
 
 :- consult(setup).
 
@@ -19,6 +20,16 @@ show_interactions(_Request) :-                 % (3)
 	format('Content-type: text/plain~n~n'),
 	rdf_global_id(data:'CIG-OA-HT-DB',Guideline),guideline_recommendations(Guideline, Recommendations),maplist(recommendation_term, Recommendations, Terms),findall(interaction(Interaction,Label,Elems,External),interaction(Recommendations, Interaction, Label, Elems, External),Interactions),with_output_to(codes(Codes), write(Interactions)), format("~s", [Codes]).
 
+show_drug_administration(Request) :-
+        member(method(post), Request), !,
+        http_read_data(Request, Data, []),
+        format('Content-type: text/plain~n~n', []),
+	rdf(Data, vocab:'aboutExecutionOf', DrugAdministration),
+	rdf(DrugAdministration, vocab:'causes', Transition),
+	string_concat(' causes ', Transition, Join1),
+	string_concat(DrugAdministration, Join1, Join2),
+        format(Join2).
+	
 show_drug(Request) :-
         member(method(post), Request), !,
         http_read_data(Request, Data, []),
