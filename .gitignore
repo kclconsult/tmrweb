@@ -1,6 +1,7 @@
 ### Project specific ###
 
 *.pyc
+lib/
 
 # Created by https://www.gitignore.io/api/node,macos,eclipse
 
@@ -57,10 +58,10 @@ local.properties
 .worksheet
 
 ### Eclipse Patch ###
-# Eclipse Core      
+# Eclipse Core
 .project
 
-# JDT-specific (Eclipse Java Development Tools)     
+# JDT-specific (Eclipse Java Development Tools)
 .classpath
 
 ### macOS ###
