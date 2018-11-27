@@ -5,11 +5,16 @@
 :- use_module(library(semweb/turtle)).
 :- use_module(library(semweb/rdf_http_plugin)).
 :- use_module(library(semweb/rdf_db)).
+:- use_module(library(semweb/rdf_ntriples)).
+
+:- rdf_prefix(vocab, 'http://anonymous.org/vocab/').
 
 :- http_handler(root(guidelines), get_available_guidelines, []).
 :- http_handler(root(interactions), show_interactions, []).
 :- http_handler(root(drug), show_drug, []).
 :- http_handler(root(drugadministration), show_drug_administration, []).
+
+:- set_prolog_flag(color_term,false).
 
 :- consult(setup).
 :- consult(util).
@@ -28,24 +33,23 @@ get_available_guidelines(_Request) :-
 
 show_interactions(Request) :-
         http_parameters(Request, [ guideline(GuidelineID, [ string ]) ]),
-        string_concat('lib/ontologies/guidelines/', GuidelineID, GuidelinePath),
-        string_concat(GuidelinePath, '.trig', MainGuidelineFile),
-        string_concat('lib/ontologies/other/', GuidelineID, MergedGuidelinePath),
-        string_concat(MergedGuidelinePath, '_merged.trig', MergedGuidelineFile),
+        atom_concat('http://localhost:3030/', GuidelineID, MainGuidelinePath),
         atom_concat('http://anonymous.org/', GuidelineID, GuidelineGraphPath),
-        atom_concat('http://anonymous.org/merged_', GuidelineID, MergedGuidelineGraphPath),
-        rdf_load(MainGuidelineFile, [format('trig'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph(GuidelineGraphPath)]),
-        rdf_load(MergedGuidelineFile, [format('trig'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph(MergedGuidelineGraphPath)]),
+        rdf_load(MainGuidelinePath, [format('nquads'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph(GuidelineGraphPath)]),
+        %rdf_load('lib/ontologies/guidelines/CIG-OA-HT-DB.trig', [format('trig'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CIG-OA-HT-DB')]),
         inferInternalInteractions,
         format('Content-type: text/plain~n~n'),
-        rdf_global_id(data:'CIG-OA-HT-DB',Guideline),
+        atom_concat('data:', GuidelineID, DataGuidelineID),
+        %rdf_global_id(DataGuidelineID, Guideline),
+        rdf_global_id(data:'CIG-OA-HT-DB', Guideline),
         guideline_recommendations(Guideline, Recommendations),
         maplist(recommendation_term, Recommendations, Terms),
         findall(interaction(Interaction,Label,Elems,External), interaction(Recommendations, Interaction, Label, Elems, External), Interactions),
         print_list(Interactions).
 
 show_drug_administration(Request) :-
-        member(method(post), Request), !,
+        member(method(post), Request),
+        !,
         http_read_data(Request, Data, []),
         format('Content-type: text/plain~n~n', []),
         rdf(Data, vocab:'aboutExecutionOf', DrugAdministration),
@@ -55,7 +59,8 @@ show_drug_administration(Request) :-
         format(Join2).
 
 show_drug(Request) :-
-        member(method(post), Request), !,
+        member(method(post), Request),
+        !,
         http_read_data(Request, Data, []),
         format('Content-type: text/plain~n~n', []),
 	      rdf(Data, vocab:'aboutExecutionOf', DrugAdministration),
