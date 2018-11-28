@@ -23,6 +23,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/', function(req, res, next) {
+
+  res.end();
+
+});
+
 app.use('/guideline', guidelineRouter);
 app.use('/drug', drugRouter);
 app.use('/belief', beliefRouter);
