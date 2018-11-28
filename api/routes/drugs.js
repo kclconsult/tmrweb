@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var request = require('request');
+const express = require('express');
+const router = express.Router();
+const request = require('request');
 
 const config = require('../lib/config');
 const guidelines = require('../lib/guidelines');
@@ -12,10 +12,10 @@ function updateDrugs() {
 router.post('/individual/create', function(req, res, next) {
 
   // Individual drug format:
-  var drug = `:` + req.body.drug_id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
+  const drug = `:` + req.body.drug_id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
             rdfs:label "` + req.body.drug_label + `"@en .`
 
-  var drugAdministration = `:` + req.body.drug_administration_id + ` rdf:type vocab:DrugAdministrationType, owl:NamedIndividual ;
+  const drugAdministration = `:` + req.body.drug_administration_id + ` rdf:type vocab:DrugAdministrationType, owl:NamedIndividual ;
     rdfs:label "` + req.body.drug_administration_label + `"@en ;
     vocab:administrationOf :` + req.body.drug_id + ` .`
 
