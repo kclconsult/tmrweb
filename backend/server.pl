@@ -37,6 +37,7 @@ load_guideline_group(GuidelineGroupID, GuidelinesGraphPath) :-
         rdf_load(MainGuidelinesPath, [format('nquads'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph(GuidelinesGraphPath)]).
 
 show_interactions(Request) :-
+        loadOntologies(),
         http_parameters(Request, [ guideline_group_id(GuidelineGroupID, [ string ]) ]),
         load_guideline_group(GuidelineGroupID, GuidelinesGraphPath),
         inferInternalInteractions,
@@ -48,9 +49,12 @@ show_interactions(Request) :-
         maplist(recommendation_term, Recommendations, Terms),
         findall(interaction(Interaction,Label,Elems,External), interaction(Recommendations, Interaction, Label, Elems, External), Interactions),
         print_list(Interactions),
+        unloadOntologies(),
         rdf_unload_graph(GuidelinesGraphPath).
 
+
 show_drug(Request) :-
+        loadOntologies(),
         http_parameters(Request, [ guideline_id(GuidelineID, [ string ]), guideline_group_id(GuidelineGroupID, [ string ]) ]),
         load_guideline_group(GuidelineGroupID, GuidelinesGraphPath),
         format('Content-type: text/plain~n~n', []),
@@ -58,9 +62,11 @@ show_drug(Request) :-
         rdf(GuidelineID_atom, vocab:'aboutExecutionOf', DrugAdministration),
 	      rdf(DrugAdministration, vocab:'administrationOf', Drug),
         format(Drug),
-        rdf_unload_graph(GuidelinesGraphPath).
+        rdf_unload_graph(GuidelinesGraphPath),
+        unloadOntologies().
 
 show_drug_effects(Request) :-
+        loadOntologies(),
         http_parameters(Request, [ drug_full_id(DrugID, [ string ]) ]),
         format('Content-type: text/plain~n~n', []),
         atom_string(DrugID_atom, DrugID),
@@ -68,4 +74,5 @@ show_drug_effects(Request) :-
         rdf(DrugAdministration, vocab:'causes', Transition),
         string_concat(' causes ', Transition, Join1),
 	      string_concat(DrugAdministration, Join1, Join2),
-        format(Join2).
+        format(Join2),
+        unloadOntologies().
