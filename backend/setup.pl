@@ -9,7 +9,8 @@
 :- rdf_load('lib/schema/model4I3.0.ttl',[format('turtle'), register_namespaces(false),base_uri('http://anonymous.org/vocab4i/'), graph('http://anonymous.org/vocab4i')]).
 :- rdf_load('http://localhost:3030/drugs',[format('nquads'), register_namespaces(false),base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CareAction&DrugTypes')]).
 :- rdf_load('lib/ontologies/Transition_SituationTypes.ttl',[format('turtle'), register_namespaces(false),base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/Transition&SituationTypes')]).
-:- rdf_load('lib/ontologies/CausationBeliefs.trig', [format('trig'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CausationBeliefs-Nanopub')]).
+%:- rdf_load('lib/ontologies/CausationBeliefs.trig', [format('trig'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CausationBeliefs-Nanopub')]).
+:- rdf_load('http://localhost:3030/beliefs', [format('nquads'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CausationBeliefs-Nanopub')]).
 
 % Logic libraries
 
