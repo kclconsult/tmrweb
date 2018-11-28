@@ -1,7 +1,7 @@
 ### Project specific ###
 
 *.pyc
-lib/
+backend/lib/
 
 # Created by https://www.gitignore.io/api/node,macos,eclipse
 
