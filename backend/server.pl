@@ -42,10 +42,8 @@ show_interactions(Request) :-
         load_guideline_group(GuidelineGroupID, GuidelinesGraphPath),
         inferInternalInteractions,
         format('Content-type: text/plain~n~n'),
-        atom_concat('data:', GuidelineGroupID, DataGuidelineGroupID),
-        %TODO: rdf_global_id(DataGuidelineID, Guideline),
-        rdf_global_id(data:'CIG-HT', Guidelines),
-        guideline_recommendations(Guidelines, Recommendations),
+        atom_concat('http://anonymous.org/data/', GuidelineGroupID, DataGuidelineGroupID), %TODO: switch to rdf_global_id.
+        guideline_recommendations(DataGuidelineGroupID, Recommendations),
         maplist(recommendation_term, Recommendations, Terms),
         findall(interaction(Interaction,Label,Elems,External), interaction(Recommendations, Interaction, Label, Elems, External), Interactions),
         print_list(Interactions),
