@@ -2,6 +2,7 @@
 
 *.pyc
 backend/lib/
+api/doc/
 
 # Created by https://www.gitignore.io/api/node,macos,eclipse
 
