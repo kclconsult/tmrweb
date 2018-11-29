@@ -47,8 +47,8 @@ router.post('/add', function(req, res, next) {
     :Rec` + req.body.guideline_group_id + `-` + req.body.guideline_id + `
             a                       vocab:ClinicalRecommendation ;
             rdfs:label              "` + req.body.label  + `"@en ;
-            vocab:aboutExecutionOf  :` + req.body.drug_administration_id + ` ;
-            vocab:basedOn           :` + req.body.belief_id + ` ;
+            vocab:aboutExecutionOf  :ActAdminister` + req.body.drug_id + ` ;
+            vocab:basedOn           :CB` + req.body.belief_id + ` ;
             vocab:partOf            :CIG-` + req.body.guideline_group_id + ` ;
             vocab:strength          "` + req.body.should_or_shouldnot + `" .
   }`
