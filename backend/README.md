@@ -7,7 +7,8 @@
 docker stop fuseki-data
 docker rm fuseki-data
 docker run --name fuseki-data -v /fuseki busybox
-docker stop fuseki; docker rm fuseki
+docker stop fuseki
+docker rm fuseki
 docker run -e ADMIN_PASSWORD=Izf3TaF0UI8oj7f -d --name fuseki -p 3030:3030 --volumes-from fuseki-data stain/jena-fuseki
 
 ### Building (Optional)
