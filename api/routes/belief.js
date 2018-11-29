@@ -19,7 +19,7 @@ router.post('/add', function(req, res, next) {
 
   const body = `data:CB` + req.body.belief_id + ` {
       data:ActAdminister` + req.body.drug_cause_id + `
-  				vocab:causes 									data:` + req.body.transition_effect_id + ` .
+  				vocab:causes 									data:Tr` + req.body.transition_effect_id + ` .
       data:CB` + req.body.belief_id + `
           a                             vocab:CausationBelief ;
           vocab:strength                "` + req.body.strength + `"^^xsd:string;
