@@ -58,7 +58,7 @@ router.post('/individual/add', function(req, res, next) {
 
   }
 
-  postDrugs(drugAdministration, res);
+  postDrugs(drug + " " + drugAdministration, res);
 
 });
 
