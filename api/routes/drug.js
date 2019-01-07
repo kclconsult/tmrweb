@@ -6,9 +6,9 @@ const config = require('../lib/config');
 const guidelines = require('../lib/guidelines');
 const utils = require('../lib/utils');
 
-function postDrugs(drugData, res) {
+function postDrugs(drugData, res, insertOrDelete) {
 
-  utils.sparqlUpdate('drugs', drugData, function(sparqlUpdate, error, response, body) {
+  utils.sparqlUpdate('drugs', drugData, insertOrDelete, function(sparqlUpdate, error, response, body) {
 
     if (!error && response.statusCode == 200) {
 
@@ -27,7 +27,7 @@ function postDrugs(drugData, res) {
 
 }
 
-router.post('/individual/add', function(req, res, next) {
+function actionIndividual(req, res, insertOrDelete) {
 
   // Individual drug format:
   const drug = `:DrugT` + req.body.drug_id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
@@ -58,11 +58,23 @@ router.post('/individual/add', function(req, res, next) {
 
   }
 
-  postDrugs(drug + " " + drugAdministration, res);
+  postDrugs(drug + " " + drugAdministration, res, insertOrDelete);
+
+}
+
+router.post('/individual/add', function(req, res, next) {
+
+  individualAction(req, res, config.INSERT)
 
 });
 
-router.post('/category/add', function(req, res, next) {
+router.post('/individual/delete', function(req, res, next) {
+
+  individualAction(req, res, config.DELETE)
+
+});
+
+function categoryAction(req, res, insertOrDelete) {
 
   // Drug category format:
   var drugCategory = `:DrugCat` + req.body.drug_category_id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
@@ -112,19 +124,43 @@ router.post('/category/add', function(req, res, next) {
 
   }
 
-  postDrugs(drugCategory, res);
+  postDrugs(drugCategory, res, insertOrDelete);
 
   res.end();
 
+}
+
+router.post('/category/add', function(req, res, next) {
+
+  categoryAction(req, res, config.INSERT);
+
 });
 
-router.post('/situation/add', function(req, res, next) {
+router.post('/category/delete', function(req, res, next) {
+
+  categoryAction(req, res, config.DELETE);
+
+});
+
+function actionSituation(req, res, insertOrDelete) {
 
   // Drug situation format:
   const drugSituation = `:Sit` + req.body.drug_situation_id + `rdf:type vocab:SituationType, owl:NamedIndividual ;
                   rdfs:label     "` + req.body.drug_situation_label + `"@en .`;
 
-  postDrugs(drugSituation, res);
+  postDrugs(drugSituation, res, insertOrDelete);
+
+}
+
+router.post('/situation/add', function(req, res, next) {
+
+  actionSituation(req, res, config.INSERT);
+
+});
+
+router.post('/situation/delete', function(req, res, next) {
+
+  actionSituation(req, res, config.DELETE);
 
 });
 

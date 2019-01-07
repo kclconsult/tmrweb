@@ -1,4 +1,6 @@
 module.exports = {
 	JENA_PORT: 3030,
-	PROLOG_PORT: 1234
+	PROLOG_PORT: 1234,
+	INSERT: "INSERT",
+	DELETE: "DELETE"
 };

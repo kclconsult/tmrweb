@@ -6,12 +6,12 @@ const guidelines = require('../lib/guidelines');
 
 class Util {
 
-	static sparqlUpdate(dataset_id, content, callback) {
+	static sparqlUpdate(dataset_id, content, insertOrDelete, callback) {
 
-    var sparqlUpdate = ` INSERT DATA {
+    var sparqlUpdate = ` ` + insertOrDelete + ` DATA {
     `;
 
-    // Parsing allows us to express the guidelines in TRIG (as per the original) work, and then convert them into triples for the SPARQL update. TODO: look at adding the TRIG directly to Jena.
+    // Parsing allows us to express the guidelines in TRIG (as per the original work), and then convert them into triples for the SPARQL update. TODO: look at adding the TRIG directly to Jena.
     parser.parse(
 
       guidelines.PREFIXES + content,

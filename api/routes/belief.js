@@ -6,20 +6,20 @@ const config = require('../lib/config');
 const guidelines = require('../lib/guidelines');
 const utils = require('../lib/utils');
 
-router.post('/add', function(req, res, next) {
+function action(req, res, insertOrDelete) {
 
   // Belief format:
   const head = `data:CB` + req.body.belief_id + `_head {
-  	  data:CB` + req.body.belief_id + `_nanopub
+      data:CB` + req.body.belief_id + `_nanopub
           a                             nanopub:Nanopublication ;
           nanopub:hasAssertion          data:CB` + req.body.belief_id + ` ;
           nanopub:hasProvenance         data:CB` + req.body.belief_id + `_provenance ;
-  		    nanopub:hasPublicationInfo    data:CB` + req.body.belief_id + `_publicationinfo .
+          nanopub:hasPublicationInfo    data:CB` + req.body.belief_id + `_publicationinfo .
   }`;
 
   const body = `data:CB` + req.body.belief_id + ` {
       data:ActAdminister` + req.body.drug_cause_id + `
-  				vocab:causes 									data:Tr` + req.body.transition_effect_id + ` .
+          vocab:causes 									data:Tr` + req.body.transition_effect_id + ` .
       data:CB` + req.body.belief_id + `
           a                             vocab:CausationBelief ;
           vocab:strength                "` + req.body.strength + `"^^xsd:string;
@@ -38,10 +38,10 @@ router.post('/add', function(req, res, next) {
   const publication = `data:CB` + req.body.belief_id + `_publicationinfo {
       data:CB` + req.body.belief_id + `_nanopub
           prov:generatedAtTime          "1922-12-28"^^xsd:dateTime ;
-  		    prov:wasAttributedTo          data:` + req.body.author + `.
+          prov:wasAttributedTo          data:` + req.body.author + `.
   }`;
 
-  utils.sparqlUpdate("beliefs", head + " " + body + " " + provenance + " " + publication, function(sparqlUpdate, error, response, body) {
+  utils.sparqlUpdate("beliefs", head + " " + body + " " + provenance + " " + publication, insertOrDelete, function(sparqlUpdate, error, response, body) {
 
     if (!error && response.statusCode == 200) {
 
@@ -57,6 +57,18 @@ router.post('/add', function(req, res, next) {
     res.end();
 
   });
+
+}
+
+router.post('/add', function(req, res, next) {
+
+  action(req, res, config.INSERT);
+
+});
+
+router.post('/delete', function(req, res, next) {
+
+  action(req, res, config.DELETE);
 
 });
 

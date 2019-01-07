@@ -32,7 +32,7 @@ router.post('/create', function(req, res, next) {
 
 });
 
-router.post('/add', function(req, res, next) {
+function action(req, res, insertOrDelete) {
 
   // Guideline format:
   const head = `:Rec` + req.body.guideline_group_id + `-` + req.body.guideline_id + `_head {
@@ -69,7 +69,7 @@ router.post('/add', function(req, res, next) {
             prov:wasAttributedTo  :` + req.body.author + ` .
   }`
 
-  utils.sparqlUpdate("CIG-" + req.body.guideline_group_id, head + " " + body + " " + provenance + " " + publication, function(sparqlUpdate, error, response, body) {
+  utils.sparqlUpdate("CIG-" + req.body.guideline_group_id, head + " " + body + " " + provenance + " " + publication, insertOrDelete, function(sparqlUpdate, error, response, body) {
 
     if (!error && response.statusCode == 200) {
 
@@ -85,6 +85,18 @@ router.post('/add', function(req, res, next) {
     res.end();
 
   });
+
+}
+
+router.post('/add', function(req, res, next) {
+
+  action(req, res, insertOrDelete);
+
+});
+
+router.post('/delete', function(req, res, next) {
+
+  action(req, res, insertOrDelete);
 
 });
 

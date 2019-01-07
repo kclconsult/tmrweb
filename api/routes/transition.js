@@ -6,9 +6,9 @@ const config = require('../lib/config');
 const guidelines = require('../lib/guidelines');
 const utils = require('../lib/utils');
 
-function postTransition(transitionData, res) {
+function postTransition(transitionData, res, insertOrDelete) {
 
-  utils.sparqlUpdate('transitions', transitionData, function(sparqlUpdate, error, response, body) {
+  utils.sparqlUpdate('transitions', transitionData, insertOrDelete, function(sparqlUpdate, error, response, body) {
 
     if (!error && response.statusCode == 200) {
 
@@ -27,17 +27,29 @@ function postTransition(transitionData, res) {
 
 }
 
-router.post('/add', function(req, res, next) {
+function action(req, res, insertOrDelete) {
 
   const transition = `:Tr` + req.body.transition_id + ` rdf:type vocab:TransitionType, owl:NamedIndividual ;
                   vocab:hasTransformableSituation :Sit` + req.body.prior_situation_id + ` ;
                   vocab:hasExpectedSituation :Sit` + req.body.post_situation_id + ` .`
 
-  postTransition(transition, res);
+  postTransition(transition, res, insertOrDelete);
+
+}
+
+router.post('/add', function(req, res, next) {
+
+  action(req, res, config.INSERT);
 
 });
 
-router.post('/situation/add', function(req, res, next) {
+router.post('/delete', function(req, res, next) {
+
+  action(req, res, config.DELETE);
+
+});
+
+function actionSituation(req, res, insertOrDelete) {
 
   var transitionSituation = `:Sit` + req.body.situation_id + ` rdf:type vocab:SituationType, owl:NamedIndividual;
               rdfs:label "` + req.body.situation_label + `"@en `;
@@ -59,7 +71,19 @@ router.post('/situation/add', function(req, res, next) {
 
   transitionSituation += `.`
 
-  postTransition(transitionSituation, res);
+  postTransition(transitionSituation, res, insertOrDelete);
+
+}
+
+router.post('/situation/add', function(req, res, next) {
+
+  actionSituation(req, res, config.INSERT);
+
+});
+
+router.post('/situation/delete', function(req, res, next) {
+
+  actionSituation(req, res, config.DELETE);
 
 });
 
