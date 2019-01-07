@@ -8,27 +8,44 @@ const utils = require('../lib/utils');
 
 router.post('/create', function(req, res, next) {
 
-  const description = `:CIG-` + req.body.guideline_group_id + ` {
-      :CIG-` + req.body.guideline_group_id + ` rdf:type vocab:ClinicalGuideline, owl:NamedIndividual ;
-          rdfs:label "` + req.body.description + `"@en .
-  }`;
+  request.post({
 
-  utils.sparqlUpdate("CIG-" + req.body.guideline_group_id, description, function(sparqlUpdate, error, response, body) {
+      url: 'http://localhost:' + config.JENA_PORT + "/$/datasets?dbType=tdb&dbName=CIG-" + req.body.guideline_group_id,
+      headers: {
+        Authorization: "Basic " + new Buffer("admin:" + config.FUSEKI_PASSWORD).toString("base64")
+      },
 
-    if (!error && response.statusCode == 200) {
+    },
+
+    function (error, response, body) {
 
       console.log(body);
 
-    } else {
+      const description = `:CIG-` + req.body.guideline_group_id + ` {
+          :CIG-` + req.body.guideline_group_id + ` rdf:type vocab:ClinicalGuideline, owl:NamedIndividual ;
+              rdfs:label "` + req.body.description + `"@en .
+      }`;
 
-      console.log(sparqlUpdate);
-      console.log(response.body);
+      utils.sparqlUpdate("CIG-" + req.body.guideline_group_id, description, config.INSERT, function(sparqlUpdate, error, response, body) {
+
+        if (!error && response.statusCode == 200) {
+
+          console.log(body);
+
+        } else {
+
+          console.log(sparqlUpdate);
+          console.log(response.body);
+
+        }
+
+        res.end();
+
+      });
 
     }
 
-    res.end();
-
-  });
+  );
 
 });
 
