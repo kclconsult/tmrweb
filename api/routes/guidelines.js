@@ -14,15 +14,6 @@ router.post('/interactions', function(req, res, next) {
 
 });
 
-router.post('/drug', function(req, res, next) {
 
-  var postData = require('querystring').stringify({
-      'guideline_group_id' : `CIG-` + req.body.guideline_group_id,
-      'guideline_id' : req.body.guideline_id
-  });
-
-  utils.callPrologServer("drug", postData, res);
-
-});
 
 module.exports = router;

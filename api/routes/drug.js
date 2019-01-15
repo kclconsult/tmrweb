@@ -27,7 +27,7 @@ function postDrugs(drugData, res, insertOrDelete) {
 
 }
 
-function actionIndividual(req, res, insertOrDelete) {
+function individualAction(req, res, insertOrDelete) {
 
   // Individual drug format:
   const drug = `:DrugT` + req.body.drug_id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
@@ -142,7 +142,7 @@ router.post('/category/delete', function(req, res, next) {
 
 });
 
-function actionSituation(req, res, insertOrDelete) {
+function situationAction(req, res, insertOrDelete) {
 
   // Drug situation format:
   const drugSituation = `:Sit` + req.body.drug_situation_id + `rdf:type vocab:SituationType, owl:NamedIndividual ;
@@ -154,13 +154,25 @@ function actionSituation(req, res, insertOrDelete) {
 
 router.post('/situation/add', function(req, res, next) {
 
-  actionSituation(req, res, config.INSERT);
+  situationAction(req, res, config.INSERT);
 
 });
 
 router.post('/situation/delete', function(req, res, next) {
 
-  actionSituation(req, res, config.DELETE);
+  situationAction(req, res, config.DELETE);
+
+});
+
+//
+
+router.post('/effect/get', function(req, res, next) {
+
+  var postData = require('querystring').stringify({
+      'drug_full_id' : req.body.drug_full_id
+  });
+
+  utils.callPrologServer("drugeffects", postData, res);
 
 });
 
