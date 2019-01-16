@@ -1,5 +1,7 @@
 const request = require('request');
 const parser = new require('n3').Parser();
+const xmlReader = require('xml-reader');
+const xmlQuery = require('xml-query');
 
 const config = require('../lib/config');
 const guidelines = require('../lib/guidelines');
@@ -67,6 +69,48 @@ class Util {
     );
 
   }
+
+	static sparqlQuery(dataset_id, query, callback) {
+
+		request.get(
+
+				'http://localhost:' + config.JENA_PORT + '/' + dataset_id + "/query?query=" + query,
+
+				function (error, response, body) {
+
+					var uris = [];
+
+					xmlQuery(xmlReader.parseSync(body)).find('uri').each(function(uri) {
+
+						// Ignore graph data
+						if (!(uri.parent.attributes.name == "g")) {
+
+							uris.push(uri.children[0].value);
+
+						}
+
+					});
+
+					callback(query, error, response, body, uris);
+
+				}
+
+		);
+
+	}
+
+	static sparqlInstanceOf(dataset_id, instance, callback) {
+
+		var query = `
+		SELECT *
+		WHERE {
+		  GRAPH ?g { ?s a ` + instance + ` }
+		}
+		`;
+
+		this.sparqlQuery(dataset_id, query, callback)
+
+	}
 
 	static callPrologServer(path, data, res) {
 
