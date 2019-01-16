@@ -115,6 +115,8 @@ router.post('/delete', function(req, res, next) {
 
 });
 
+//
+
 router.post('/drug/get', function(req, res, next) {
 
   var postData = require('querystring').stringify({
@@ -123,6 +125,16 @@ router.post('/drug/get', function(req, res, next) {
   });
 
   utils.callPrologServer("drug", postData, res);
+
+});
+
+router.post('/all/get/', function(req, res, next) {
+
+  utils.sparqlGraph("CIG-" + req.body.guideline_group_id, req.body.guideline_full_id, function(guidelineData) {
+
+    res.send(guidelineData);
+
+  });
 
 });
 

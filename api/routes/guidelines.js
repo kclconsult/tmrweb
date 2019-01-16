@@ -14,6 +14,14 @@ router.post('/interactions', function(req, res, next) {
 
 });
 
+router.post('/get', function(req, res, next) {
 
+  utils.sparqlGraphInstanceOf("CIG-" + req.body.guideline_group_id, "<http://anonymous.org/vocab/ClinicalRecommendation>", function(sparqlQuery, error, response, body, uris) {
+
+    res.send(uris);
+
+  });
+
+});
 
 module.exports = router;
