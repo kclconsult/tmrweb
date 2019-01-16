@@ -72,4 +72,14 @@ router.post('/delete', function(req, res, next) {
 
 });
 
+router.post('/all/get/', function(req, res, next) {
+
+  utils.sparqlGraph("beliefs", req.body.belief_full_id, function(beliefData) {
+
+    res.send(beliefData);
+
+  });
+
+});
+
 module.exports = router;

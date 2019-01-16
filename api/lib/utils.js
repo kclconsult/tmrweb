@@ -78,6 +78,8 @@ class Util {
 
 			function (error, response, body) {
 
+				console.log(body);
+
 				var data = [];
 
 				var queryContainer = xmlQuery(xmlReader.parseSync(body));
@@ -109,6 +111,47 @@ class Util {
 
 	}
 
+	static nList(list, n) {
+
+		console.log(list);
+
+		var pairedPredicateObject = [];
+
+		for ( var i = 0; i < list.length; i+= n) {
+
+			var nTuple = [];
+
+			for ( var j = i; j < i + n; j++ ) {
+
+				nTuple.push(list[j]);
+
+			}
+
+			pairedPredicateObject.push(nTuple);
+
+		}
+
+		return pairedPredicateObject;
+
+	}
+
+	static sparqlGraph(dataset_id, graph, callback) {
+
+		var query = `
+		SELECT ?s ?p ?o
+		WHERE {
+			GRAPH <` + graph + `> { ?s ?p ?o }
+		}
+		`;
+
+		this.sparqlQuery(dataset_id, query, function(sparqlQuery, error, response, body, data) {
+
+			callback(Util.nList(data, 3));
+
+		});
+
+	}
+
 	static sparqlSubject(dataset_id, subject, callback) {
 
 			var query = `
@@ -120,17 +163,22 @@ class Util {
 
 			this.sparqlQuery(dataset_id, query, function(sparqlQuery, error, response, body, data) {
 
-		    var pairedPredicateObject = [];
-
-		    for ( var i = 0; i < data.length; i+= 2) {
-
-		      pairedPredicateObject.push([data[i], data[i+1]]);
-
-		    }
-
-		    callback(pairedPredicateObject);
+		    callback(Util.nList(data, 2));
 
 			});
+
+	}
+
+	static sparqlGraphInstanceOf(dataset_id, instance, callback) {
+
+		var query = `
+		SELECT ?g
+		WHERE {
+		  GRAPH ?g { ?s a ` + instance + ` }
+		}
+		`;
+
+		this.sparqlQuery(dataset_id, query, callback)
 
 	}
 
