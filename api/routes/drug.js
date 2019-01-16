@@ -176,4 +176,24 @@ router.post('/effect/get', function(req, res, next) {
 
 });
 
+router.post('/all/get/', function(req, res, next) {
+
+  utils.sparqlSubject("drugs", req.body.drug_full_id, function(sparqlQuery, error, response, body, data) {
+
+    console.log(data);
+
+    pairedPredicateObject = [];
+
+    for ( var i = 0; i < data.length; i+= 2) {
+
+      pairedPredicateObject.push([data[i], data[i+1]]);
+
+    }
+
+    res.send(pairedPredicateObject);
+
+  });
+
+});
+
 module.exports = router;

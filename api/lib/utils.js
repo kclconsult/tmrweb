@@ -74,26 +74,25 @@ class Util {
 
 		request.get(
 
-				'http://localhost:' + config.JENA_PORT + '/' + dataset_id + "/query?query=" + query,
+			'http://localhost:' + config.JENA_PORT + '/' + dataset_id + "/query?query=" + query,
 
-				function (error, response, body) {
+			function (error, response, body) {
 
-					var uris = [];
+				var data = [];
 
-					xmlQuery(xmlReader.parseSync(body)).find('uri').each(function(uri) {
+				console.log(body);
 
-						// Ignore graph data
-						if (!(uri.parent.attributes.name == "g")) {
+				var queryContainer = xmlQuery(xmlReader.parseSync(body));
 
-							uris.push(uri.children[0].value);
+				queryContainer.find('binding').each(function(binding) {
 
-						}
+					data.push(binding.children[0].children[0].value);
 
-					});
+				});
 
-					callback(query, error, response, body, uris);
+				callback(query, error, response, body, data);
 
-				}
+			}
 
 		);
 
@@ -102,9 +101,22 @@ class Util {
 	static sparqlInstanceOf(dataset_id, instance, callback) {
 
 		var query = `
-		SELECT *
+		SELECT ?s
 		WHERE {
 		  GRAPH ?g { ?s a ` + instance + ` }
+		}
+		`;
+
+		this.sparqlQuery(dataset_id, query, callback)
+
+	}
+
+	static sparqlSubject(dataset_id, subject, callback) {
+
+		var query = `
+		SELECT ?p ?o
+		WHERE {
+		  GRAPH ?g { <`+ subject  +`> ?p ?o }
 		}
 		`;
 
@@ -116,17 +128,17 @@ class Util {
 
 	  request.post(
 
-	      'http://localhost:' + config.PROLOG_PORT + "/" + path,
-	      { headers: {
-	          'Content-Type': 'application/x-www-form-urlencoded'
-	        },
-	        body: data },
+      'http://localhost:' + config.PROLOG_PORT + "/" + path,
+        { headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data },
 
-	      function (error, response, body) {
+      function (error, response, body) {
 
-	          res.send(response.body);
+          res.send(response.body);
 
-	      }
+      }
 
 	  );
 
