@@ -87,4 +87,31 @@ router.post('/situation/delete', function(req, res, next) {
 
 });
 
+//
+
+
+
+router.post('/all/get/', function(req, res, next) {
+
+  utils.sparqlSubject("transitions", req.body.transition_full_id, function(transitionData) {
+
+    res.send(transitionData);
+
+  });
+
+});
+
+router.post('/situation/all/get/', function(req, res, next) {
+
+  utils.sparqlSubject("transitions", req.body.situation_full_id, function(situationData) {
+
+    res.send(situationData);
+
+  });
+
+});
+
+
+
+
 module.exports = router;

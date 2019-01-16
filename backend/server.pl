@@ -36,6 +36,19 @@ load_guideline_group(GuidelineGroupID, GuidelinesGraphPath) :-
         atom_concat('http://anonymous.org/', GuidelineGroupID, GuidelinesGraphPath),
         rdf_load(MainGuidelinesPath, [format('nquads'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph(GuidelinesGraphPath)]).
 
+        show_interactions() :-
+                loadOntologies(),
+                load_guideline_group("CIG-HT", GuidelinesGraphPath),
+                inferInternalInteractions,
+                format('Content-type: text/plain~n~n'),
+                atom_concat('http://anonymous.org/data/', "CIG-HT", DataGuidelineGroupID), %TODO: switch to rdf_global_id.
+                guideline_recommendations(DataGuidelineGroupID, Recommendations),
+                maplist(recommendation_term, Recommendations, Terms),
+                findall(interaction(Interaction,Label,Elems,External), interaction(Recommendations, Interaction, Label, Elems, External), Interactions),
+                print_list(Interactions),
+                unloadOntologies(),
+                rdf_unload_graph(GuidelinesGraphPath).
+
 show_interactions(Request) :-
         loadOntologies(),
         http_parameters(Request, [ guideline_group_id(GuidelineGroupID, [ string ]) ]),

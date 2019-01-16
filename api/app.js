@@ -13,6 +13,8 @@ var beliefRouter = require('./routes/belief');
 var transitionRouter = require('./routes/transition');
 var guidelinesRouter = require('./routes/guidelines');
 var drugsRouter = require('./routes/drugs');
+var beliefsRouter = require('./routes/beliefs');
+var transitionsRouter = require('./routes/transitions');
 
 var app = express();
 
@@ -38,6 +40,8 @@ app.use('/belief', beliefRouter);
 app.use('/transition', transitionRouter);
 app.use('/guidelines', guidelinesRouter);
 app.use('/drugs', drugsRouter);
+app.use('/beliefs', beliefsRouter);
+app.use('/transitions', transitionsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

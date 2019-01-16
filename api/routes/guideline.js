@@ -19,8 +19,6 @@ router.post('/create', function(req, res, next) {
 
     function (error, response, body) {
 
-      console.log(body);
-
       const description = `:CIG-` + req.body.guideline_group_id + ` {
           :CIG-` + req.body.guideline_group_id + ` rdf:type vocab:ClinicalGuideline, owl:NamedIndividual ;
               rdfs:label "` + req.body.description + `"@en .
@@ -107,13 +105,13 @@ function action(req, res, insertOrDelete) {
 
 router.post('/add', function(req, res, next) {
 
-  action(req, res, insertOrDelete);
+  action(req, res, config.INSERT);
 
 });
 
 router.post('/delete', function(req, res, next) {
 
-  action(req, res, insertOrDelete);
+  action(req, res, config.DELETE);
 
 });
 

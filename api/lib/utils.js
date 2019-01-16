@@ -80,8 +80,6 @@ class Util {
 
 				var data = [];
 
-				console.log(body);
-
 				var queryContainer = xmlQuery(xmlReader.parseSync(body));
 
 				queryContainer.find('binding').each(function(binding) {
@@ -113,14 +111,26 @@ class Util {
 
 	static sparqlSubject(dataset_id, subject, callback) {
 
-		var query = `
-		SELECT ?p ?o
-		WHERE {
-		  GRAPH ?g { <`+ subject  +`> ?p ?o }
-		}
-		`;
+			var query = `
+			SELECT ?p ?o
+			WHERE {
+			  GRAPH ?g { <`+ subject  +`> ?p ?o }
+			}
+			`;
 
-		this.sparqlQuery(dataset_id, query, callback)
+			this.sparqlQuery(dataset_id, query, function(sparqlQuery, error, response, body, data) {
+
+		    var pairedPredicateObject = [];
+
+		    for ( var i = 0; i < data.length; i+= 2) {
+
+		      pairedPredicateObject.push([data[i], data[i+1]]);
+
+		    }
+
+		    callback(pairedPredicateObject);
+
+			});
 
 	}
 
