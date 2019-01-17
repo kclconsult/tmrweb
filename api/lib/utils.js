@@ -78,8 +78,6 @@ class Util {
 
 			function (error, response, body) {
 
-				console.log(body);
-
 				var data = [];
 
 				var queryContainer = xmlQuery(xmlReader.parseSync(body));
@@ -112,8 +110,6 @@ class Util {
 	}
 
 	static nList(list, n) {
-
-		console.log(list);
 
 		var pairedPredicateObject = [];
 
