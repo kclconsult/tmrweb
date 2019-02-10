@@ -23,7 +23,7 @@ server(Port) :-
         http_server(http_dispatch, [port(Port)]).
 
 get_available_guidelines(_Request) :-
-        directory_files('lib/ontologies/guidelines', Files),
+        directory_files('tmr/ontologies/guidelines', Files),
         format('Content-type: text/plain~n~n'),
         sort(Files, SortedFiles),
         remove_head(SortedFiles, SortedFilesWithoutHead),

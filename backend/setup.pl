@@ -5,8 +5,8 @@
 
 % Base ontologies.
 
-:- rdf_load('lib/schema/model.ttl', [format('turtle'), register_namespaces(false), base_uri('http://anonymous.org/vocab/'), graph('http://anonymous.org/vocab')]).
-:- rdf_load('lib/schema/model4I3.0.ttl', [format('turtle'), register_namespaces(false),base_uri('http://anonymous.org/vocab4i/'), graph('http://anonymous.org/vocab4i')]).
+:- rdf_load('tmr/schema/model.ttl', [format('turtle'), register_namespaces(false), base_uri('http://anonymous.org/vocab/'), graph('http://anonymous.org/vocab')]).
+:- rdf_load('tmr/schema/model4I3.0.ttl', [format('turtle'), register_namespaces(false),base_uri('http://anonymous.org/vocab4i/'), graph('http://anonymous.org/vocab4i')]).
 
 % User ontologies, at Jena endpoint.
 
@@ -22,5 +22,5 @@ unloadOntologies() :-
 
 % Logic libraries
 
-:- include('lib/logic/interactionRules').
-:- include('lib/logic/interaction_graph').
+:- include('tmr/logic/interactionRules').
+:- include('tmr/logic/interaction_graph').
