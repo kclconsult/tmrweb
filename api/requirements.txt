@@ -7,3 +7,6 @@ pug
 request
 n3
 dotenv
+xml-reader
+xml-query
+debug

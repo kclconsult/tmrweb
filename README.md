@@ -6,7 +6,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Before installing, [download and install Docker](https://www.docker.com/get-started), [Prolog](http://www.swi-prolog.org/Download.html) and [Node.js](https://nodejs.org/en/download/).
+Before installing, [download and install Docker](https://www.docker.com/get-started), [Prolog](http://www.swi-prolog.org/Download.html), [python](https://www.python.org/downloads/), [pip](https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing), [virtualenv](https://virtualenv.pypa.io/en/latest/installation/) and [Node.js](https://nodejs.org/en/download/).
 
 ## Usage
 
@@ -18,16 +18,10 @@ Run main container storage:
 docker run --name fuseki-data -v /fuseki busybox
 ```
 
-Run main container, supply password and container store:
+Run main container, supply port (3030, recommended), password and container store:
 
 ```
 docker run -e ADMIN_PASSWORD=[Password] -d --name fuseki -p 3030:3030 --volumes-from fuseki-data stain/jena-fuseki
-```
-
-Installs through docker:
-
-```
-docker run -p 3030:3030 stain/jena-fuseki
 ```
 
 ### TMR reasoner
@@ -50,13 +44,41 @@ Clone the TMR repository:
 git clone git@github.kcl.ac.uk:big/tmr.git
 ```
 
-Enter prolog environemtn:
+Enter Prolog environment:
 
 ```
 swipl
 ```
 
+Load server:
 
+```
+?- consult('server.pl').
+```
+
+Start server on a given port (1234, recommended):
+
+```
+?- server(1234).
+```
+
+### TMRWeb API
+
+From within the project folder, create a node virtual environment (within a python virtual environment), and activate it:
+
+```
+virtualenv env
+. env/bin/activate
+pip install nodeenv
+nodeenv nenv
+. nenv/bin/activate
+```
+
+Install dependencies:
+
+```
+npm install
+```
 
 ## Running the tests
 
