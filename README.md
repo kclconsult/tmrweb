@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 Before installing, [download and install Docker](https://www.docker.com/get-started), [Prolog](http://www.swi-prolog.org/Download.html), [python](https://www.python.org/downloads/), [pip](https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing), [virtualenv](https://virtualenv.pypa.io/en/latest/installation/) and [Node.js](https://nodejs.org/en/download/).
 
-## Usage
+## Running
 
 ### Apache Jena Fuseki (Triple Store)
 
@@ -77,8 +77,18 @@ nodeenv nenv
 Install dependencies:
 
 ```
-npm install
+cat requirements.txt | xargs npm install -g
 ```
+
+Run server:
+
+```
+npm started
+```
+
+## Usage
+
+See [documentation](api/README.md).
 
 ## Running the tests
 
