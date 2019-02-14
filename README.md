@@ -24,12 +24,14 @@ Run main container, supply port (3030, recommended), password and container stor
 docker run -e ADMIN_PASSWORD=[Password] -d --name fuseki -p 3030:3030 --volumes-from fuseki-data stain/jena-fuseki
 ```
 
+Navigate to http://localhost:3030, select Manage Datasets, and create three new (persistent) datasets: drugs, transitions and beliefs.
+
 ### TMR reasoner
 
 Clone this repository:
 
 ```
-git clone https://github.kcl.ac.uk/big/guideline-interaction-tool
+git clone https://github.com/consult-kcl/drug-interaction
 ```
 
 Change into the backend directory:
