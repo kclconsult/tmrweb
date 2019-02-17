@@ -66,7 +66,7 @@ Start server on a given port (1234, recommended):
 
 ### TMRWeb API
 
-From within the project folder, create a node virtual environment (within a python virtual environment), and activate it:
+From within the backend folder, create a node virtual environment (within a python virtual environment), and activate it:
 
 ```
 virtualenv env
