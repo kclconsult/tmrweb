@@ -43,7 +43,7 @@ cd backend
 Clone the TMR repository:
 
 ```
-git clone git@github.kcl.ac.uk:big/tmr.git
+git clone https://github.com/consult-kcl/tmr.git
 ```
 
 Enter Prolog environment:
@@ -66,7 +66,13 @@ Start server on a given port (1234, recommended):
 
 ### TMRWeb API
 
-From within the backend folder, create a node virtual environment (within a python virtual environment), and activate it:
+Change to the API folder.
+
+```
+cd ../api
+```
+
+Create a node virtual environment (within a python virtual environment), and activate it:
 
 ```
 virtualenv env
@@ -91,7 +97,7 @@ touch .env
 Add the following information to this environment file using a text editor:
 
 ```
-FUSEKI_PASSWORD="[Password]".
+FUSEKI_PASSWORD="[Password]"
 ```
 
 Where [Password] is the password you created for the triple store earlier.
@@ -99,7 +105,7 @@ Where [Password] is the password you created for the triple store earlier.
 Run server:
 
 ```
-npm started
+npm start
 ```
 
 The server runs by default on port 3000.
