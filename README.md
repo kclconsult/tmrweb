@@ -82,11 +82,27 @@ Install dependencies:
 cat requirements.txt | xargs npm install -g
 ```
 
+Create an environment file:
+
+```
+touch .env
+```
+
+Add the following information to this environment file using a text editor:
+
+```
+FUSEKI_PASSWORD="[Password]".
+```
+
+Where [Password] is the password you created for the triple store earlier.
+
 Run server:
 
 ```
 npm started
 ```
+
+The server runs by default on port 3000.
 
 ## Usage
 
