@@ -24,7 +24,7 @@ Run main container, supply port (3030, recommended), password and container stor
 docker run -e ADMIN_PASSWORD=[Password] -d --name fuseki -p 3030:3030 --volumes-from fuseki-data stain/jena-fuseki
 ```
 
-Navigate to http://localhost:3030, select Manage Datasets, and create three new (persistent) datasets: drugs, transitions and beliefs.
+Navigate to http://localhost:3030, login with the username `admin` and the password as set above. select Manage Datasets, and create three new (persistent) datasets: drugs, transitions and beliefs.
 
 ### TMR reasoner
 
