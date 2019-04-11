@@ -46,10 +46,10 @@ Clone the TMR repository:
 git clone https://github.com/consult-kcl/tmr.git
 ```
 
-Enter Prolog environment:
+Enter Prolog environment, and include address of Fuseki server as environment variable:
 
 ```
-swipl
+FUSEKI_HOST_PORT=http://localhost:3030/ swipl
 ```
 
 Load server:
@@ -108,17 +108,47 @@ Run server:
 npm start
 ```
 
-The server runs by default on port 3000.
+The server runs by default on port 8888.
 
 ## Usage
 
 See [documentation](api/README.md).
 
-## Running the tests
-
 ## Deployment
 
+Deployment is via [Docker](https://docs.docker.com/compose/install/), and includes containers for this application (api and backend), Fuskei and an optional reverse proxy. If using the reverse proxy, fill in the appropriate [configuration](proxy/nginx.conf).
+
+Build these containers:
+
+```
+docker-compose build
+```
+
+Run these containers:
+
+```
+docker-compose up
+```
+
+(Optional) Run without proxy:
+
+```
+docker-compose up --scale proxy=0
+```
+
+Different docker-compose files exist to accomodate different service configurations.
+
+### Custom certs
+
+To use custom certificates for communication with this service's proxy, reference them in the proxy's [Dockerfile](proxy/Dockerfile). The [gen-domain-cert](proxy/certs/gen-domain-cert.sh) script can be used to generate custom certs (e.g. 'maximoff.crt') using a CA root cert (e.g. 'consult.crt') and accompanying keys. If distributing an image outside of an organisation, edit [Dockerfile](proxy/Dockerfile) and [docker-compose](docker-compose.yml) to mount a volume on the host containing the certs instead, so that images are not transferred with the certs inside then.
+
+## Running the tests
+
+--
+
 ## Built With
+
+--
 
 ## Contributing
 
@@ -140,4 +170,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-*
+* Redesigned processing tool: [github.com/veruskacz/CG-RDF](https://github.com/veruskacz/CG-RDF)

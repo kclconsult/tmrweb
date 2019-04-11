@@ -8,20 +8,9 @@ const utils = require('../lib/utils');
 
 function postTransition(transitionData, res, insertOrDelete) {
 
-  utils.sparqlUpdate('transitions', transitionData, insertOrDelete, function(sparqlUpdate, error, response, body) {
+  utils.sparqlUpdate('transitions', transitionData, insertOrDelete, function(status) {
 
-    if (!error && response.statusCode == 200) {
-
-      console.log(body);
-
-    } else {
-
-      console.log(sparqlUpdate);
-      console.log(response.body);
-
-    }
-
-    res.end();
+    res.sendStatus(status);
 
   });
 
@@ -89,8 +78,6 @@ router.post('/situation/delete', function(req, res, next) {
 
 //
 
-
-
 router.post('/all/get/', function(req, res, next) {
 
   utils.sparqlSubject("transitions", req.body.transition_full_id, function(transitionData) {
@@ -110,8 +97,5 @@ router.post('/situation/all/get/', function(req, res, next) {
   });
 
 });
-
-
-
 
 module.exports = router;

@@ -3,6 +3,9 @@
 *.pyc
 backend/tmr/
 api/doc/
+proxy/certs/*
+!proxy/certs/gen-ca-cert.sh
+!proxy/certs/gen-domain-cert.sh
 
 # Created by https://www.gitignore.io/api/node,macos,eclipse
 

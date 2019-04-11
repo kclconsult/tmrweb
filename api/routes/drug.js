@@ -6,51 +6,52 @@ const config = require('../lib/config');
 const guidelines = require('../lib/guidelines');
 const utils = require('../lib/utils');
 
-function postDrugs(drugData, res, insertOrDelete) {
+function postDrugs(drugData, res, insertOrDelete, callback) {
 
-  utils.sparqlUpdate('drugs', drugData, insertOrDelete, function(sparqlUpdate, error, response, body) {
+  utils.sparqlUpdate('drugs', drugData, insertOrDelete, function(status) {
 
-    if (!error && response.statusCode == 200) {
-
-      console.log(body);
-
-    } else {
-
-      console.log(sparqlUpdate);
-      console.log(response.body);
-
-    }
-
-    res.end();
+    callback(status);
 
   });
 
 }
 
-function individualAction(req, res, insertOrDelete) {
+function type(drugOrCategory, id) {
+
+  return drug = `:Drug` + drugOrCategory + id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
+            rdfs:label "` + id + `"@en .`
+
+}
+
+function administration(drugOrCategory, id) {
+
+  var drugAdministration = `:ActAdminister` + id + ` rdf:type vocab:DrugAdministrationType, owl:NamedIndividual ;
+    rdfs:label "Administer ` + id + `"@en ;
+    `
+  drugAdministration += `vocab:administrationOf :Drug` + drugOrCategory + id;
+
+  return drugAdministration;
+
+}
+
+// Specifying drug subsumption via the administrationOf triple.
+function administrationSubsumption(id) {
+
+  return ` ;
+  vocab:subsumes :ActAdminister` + id + ` .`
+
+}
+
+function individualAction(req, res, insertOrDelete, callback) {
 
   // Individual drug format:
-  const drug = `:DrugT` + req.body.drug_id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
-            rdfs:label "` + req.body.drug_id + `"@en .`
+  const drug = type("T", req.body.drug_id)
 
-  var drugAdministration = `:ActAdminister` + req.body.drug_id + ` rdf:type vocab:DrugAdministrationType, owl:NamedIndividual ;
-    rdfs:label "Administer ` + req.body.drug_id + `"@en ;
-    `
-
-  if ( req.body.drug_category_id ) {
-
-    drugAdministration += `vocab:administrationOf :DrugCat` + req.body.drug_category_id;
-
-  } else {
-
-    drugAdministration += `vocab:administrationOf :DrugT` + req.body.drug_id;
-
-  }
+  var drugAdministration = administration("T", req.body.drug_id);
 
   if ( req.body.subsumed_drug_id ) {
 
-    drugAdministration += ` ;
-    vocab:subsumes :ActAdminister` + req.body.subsumed_drug_id + ` .`
+    drugAdministration += administrationSubsumption(req.body.subsumed_drug_id);
 
   } else {
 
@@ -58,44 +59,78 @@ function individualAction(req, res, insertOrDelete) {
 
   }
 
-  postDrugs(drug + " " + drugAdministration, res, insertOrDelete);
+  postDrugs(drug + " " + drugAdministration, res, insertOrDelete, callback);
 
 }
 
 router.post('/individual/add', function(req, res, next) {
 
-  individualAction(req, res, config.INSERT)
+  individualAction(req, res, config.INSERT, function(status) {
+
+    res.sendStatus(status);
+
+  });
 
 });
 
 router.post('/individual/delete', function(req, res, next) {
 
-  individualAction(req, res, config.DELETE)
+  individualAction(req, res, config.DELETE, function(status) {
+
+    res.sendStatus(status);
+
+  });
 
 });
 
-function categoryAction(req, res, insertOrDelete) {
+// Specifying drug subsumptions directly via drug definition (typically used for categories).
+function directSubsumptions(drugOrCategory, subsumedDrugIds) {
+
+  var drugSubsumption = ` ;
+  vocab:subsumes  `;
+
+  subsumedDrugIds.split(",").forEach(function(drugId) {
+
+    drugSubsumption += (`:Drug` + drugOrCategory + drugId.trim() + `, `);
+
+  });
+
+  drugSubsumption = drugSubsumption.substring(0, drugSubsumption.length - 2);
+
+}
+
+function groupingCriteria(groupingCriteriaIds) {
+
+  var groupingCriteria = ` ;
+  vocab:hasGroupingCriteria  `;
+
+  groupingCriteriaIds.split(",").forEach(function(criteriaId) {
+
+    groupingCriteria += (`:` + criteriaId.trim() + `, `);
+
+  });
+
+  groupingCriteria = groupingCriteria.substring(0, groupingCriteria.length - 2);
+
+  groupingCriteria += ` .`
+
+}
+
+function categoryAction(req, res, insertOrDelete, callback) {
 
   // Drug category format:
-  var drugCategory = `:DrugCat` + req.body.drug_category_id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
-    rdfs:label "` + req.body.drug_category_id + `"@en`;
+  const drugCategory = type("Cat", req.body.drug_category_id)
+
+  var drugCategoryAdministration = administration("Cat", req.body.drug_category_id);
 
   if ( req.body.subsumed_drug_ids ) {
 
-    drugCategory += ` ;
-    vocab:subsumes  `;
-
-    req.body.subsumed_drug_ids.split(",").forEach(function(drug_id) {
-
-      drugCategory += (`:DrugT` + drug_id.trim() + `, `);
-
-    });
-
-    drugCategory = drugCategory.substring(0, drugCategory.length - 2);
+    // Assumes IDs are for drugs, thus does not currently allow the specification of categories subsuming categories.
+    drugCategoryAdministration += directSubsumptions("T", req.body.subsumed_drug_ids);
 
     if ( !req.body.grouping_criteria_ids ) {
 
-      drugCategory += ` .`
+      drugCategoryAdministration += ` .`
 
     }
 
@@ -103,64 +138,67 @@ function categoryAction(req, res, insertOrDelete) {
 
   if ( req.body.grouping_criteria_ids ) {
 
-    drugCategory += ` ;
-    vocab:hasGroupingCriteria  `;
-
-    req.body.grouping_criteria_ids.split(",").forEach(function(criteria_id) {
-
-      drugCategory += (`:` + criteria_id.trim() + `, `);
-
-    });
-
-    drugCategory = drugCategory.substring(0, drugCategory.length - 2);
-
-    drugCategory += ` .`
+    drugCategoryAdministration += groupingCriteria(req.body.grouping_criteria_ids);
 
   }
 
   if ( !req.body.subsumed_drug_ids && !req.body.grouping_criteria_ids ) {
 
-    drugCategory += ` .`
+    drugCategoryAdministration += ` .`
 
   }
 
-  postDrugs(drugCategory, res, insertOrDelete);
-
-  res.end();
+  postDrugs(drugCategory + " " + drugCategoryAdministration, res, insertOrDelete, callback);
 
 }
 
 router.post('/category/add', function(req, res, next) {
 
-  categoryAction(req, res, config.INSERT);
+  categoryAction(req, res, config.INSERT, function(status) {
+
+    res.sendStatus(status);
+
+  });
 
 });
 
 router.post('/category/delete', function(req, res, next) {
 
-  categoryAction(req, res, config.DELETE);
+  categoryAction(req, res, config.DELETE, function(status) {
+
+    res.sendStatus(status);
+
+  });
 
 });
 
-function situationAction(req, res, insertOrDelete) {
+function situationAction(req, res, insertOrDelete, callback) {
 
   // Drug situation format:
   const drugSituation = `:Sit` + req.body.drug_situation_id + `rdf:type vocab:SituationType, owl:NamedIndividual ;
                   rdfs:label     "` + req.body.drug_situation_label + `"@en .`;
 
-  postDrugs(drugSituation, res, insertOrDelete);
+  postDrugs(drugSituation, res, insertOrDelete, callback);
 
 }
 
 router.post('/situation/add', function(req, res, next) {
 
-  situationAction(req, res, config.INSERT);
+  situationAction(req, res, config.INSERT, function(status) {
+
+    res.sendStatus(status);
+
+  });
 
 });
 
 router.post('/situation/delete', function(req, res, next) {
 
-  situationAction(req, res, config.DELETE);
+  situationAction(req, res, config.DELETE, function(status) {
+
+    res.sendStatus(status);
+
+  });
 
 });
 
@@ -172,7 +210,11 @@ router.post('/effect/get', function(req, res, next) {
       'drug_full_id' : req.body.drug_full_id
   });
 
-  utils.callPrologServer("drugeffects", postData, res);
+  utils.callPrologServer("drugeffects", postData, res, function(data) {
+
+    res.send(data);
+
+  });
 
 });
 

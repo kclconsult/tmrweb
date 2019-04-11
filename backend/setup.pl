@@ -11,9 +11,13 @@
 % User ontologies, at Jena endpoint.
 
 loadOntologies() :-
-  rdf_load('http://localhost:3030/drugs', [format('nquads'), register_namespaces(false),base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CareAction&DrugTypes')]),
-  rdf_load('http://localhost:3030/transitions', [format('nquads'), register_namespaces(false),base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/Transition&SituationTypes')]),
-  rdf_load('http://localhost:3030/beliefs', [format('nquads'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CausationBeliefs-Nanopub')]).
+  getenv("FUSEKI_HOST_PORT", FUSEKI_HOST_PORT),
+  atom_concat(FUSEKI_HOST_PORT, "drugs", FUSEKI_DRUGS_URL),
+  rdf_load(FUSEKI_DRUGS_URL, [format('nquads'), register_namespaces(false),base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CareAction&DrugTypes')]),
+  atom_concat(FUSEKI_HOST_PORT, "transitions", FUSEKI_TRANSITIONS_URL),
+  rdf_load(FUSEKI_TRANSITIONS_URL, [format('nquads'), register_namespaces(false),base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/Transition&SituationTypes')]),
+  atom_concat(FUSEKI_HOST_PORT, "beliefs", FUSEKI_BELIEFS_URL),
+  rdf_load(FUSEKI_BELIEFS_URL, [format('nquads'), register_namespaces(false), base_uri('http://anonymous.org/data/'), graph('http://anonymous.org/CausationBeliefs-Nanopub')]).
 
 unloadOntologies() :-
   rdf_unload_graph('http://anonymous.org/CareAction&DrugTypes'),

@@ -8,7 +8,7 @@ const utils = require('../lib/utils');
 
 router.post('/get', function(req, res, next) {
 
-  utils.sparqlGraphInstanceOf("beliefs", "<http://anonymous.org/vocab/CausationBelief>", function(sparqlQuery, error, response, body, uris) {
+  utils.sparqlGraphInstanceOf("beliefs", "<http://anonymous.org/vocab/CausationBelief>", function(uris) {
 
     res.send(uris);
 

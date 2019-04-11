@@ -1,0 +1,15 @@
+location /tmrweb/ {
+
+  # Resolve using docker DNS.
+  resolver 127.0.0.11 valid=30s;
+
+  proxy_set_header        Host $host;
+  proxy_set_header        X-Real-IP $remote_addr;
+  proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header        X-Forwarded-Proto $scheme;
+  # Using a variable here is a hack for the not available error if the message passer is not yet up at 8888.
+  set $upstream           drug-interaction_webapp_1; # Hostname from docker-compose
+  proxy_pass              http://$upstream:8888;
+  proxy_read_timeout      90;
+
+}

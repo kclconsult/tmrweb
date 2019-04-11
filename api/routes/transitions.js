@@ -8,7 +8,7 @@ const utils = require('../lib/utils');
 
 router.post('/get', function(req, res, next) {
 
-  utils.sparqlInstanceOf("transitions", "<http://anonymous.org/vocab/TransitionType>", function(sparqlQuery, error, response, body, uris) {
+  utils.sparqlInstanceOf("transitions", "<http://anonymous.org/vocab/TransitionType>", function(uris) {
 
     res.send(uris);
 
@@ -18,7 +18,7 @@ router.post('/get', function(req, res, next) {
 
 router.post('/situations/get', function(req, res, next) {
 
-  utils.sparqlInstanceOf("transitions", "<http://anonymous.org/vocab/SituationType>", function(sparqlQuery, error, response, body, uris) {
+  utils.sparqlInstanceOf("transitions", "<http://anonymous.org/vocab/SituationType>", function(uris) {
 
     res.send(uris);
 

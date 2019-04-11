@@ -41,20 +41,9 @@ function action(req, res, insertOrDelete) {
           prov:wasAttributedTo          data:` + req.body.author + `.
   }`;
 
-  utils.sparqlUpdate("beliefs", head + " " + body + " " + provenance + " " + publication, insertOrDelete, function(sparqlUpdate, error, response, body) {
+  utils.sparqlUpdate("beliefs", head + " " + body + " " + provenance + " " + publication, insertOrDelete, function(status) {
 
-    if (!error && response.statusCode == 200) {
-
-      console.log(body);
-
-    } else {
-
-      console.log(sparqlUpdate);
-      console.log(response.body);
-
-    }
-
-    res.end();
+    res.sendStatus(status);
 
   });
 

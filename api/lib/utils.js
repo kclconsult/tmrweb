@@ -1,10 +1,12 @@
 const request = require('request');
-const parser = new require('n3').Parser();
+const n3 = require('n3');
+const parser = new n3.Parser();
 const xmlReader = require('xml-reader');
 const xmlQuery = require('xml-query');
 
 const config = require('../lib/config');
 const guidelines = require('../lib/guidelines');
+const logger = require('../config/winston');
 
 class Util {
 
@@ -47,18 +49,33 @@ class Util {
 
           sparqlUpdate += `
           }`;
+
           var prefixAndSparqlUpdate = guidelines.PREFIXES + "\n" + sparqlUpdate
+					const URL = "http://" + config.JENA_HOST + ":" + config.JENA_PORT + "/" + dataset_id + "/update";
 
           request.post(
 
-              'http://localhost:' + config.JENA_PORT + '/' + dataset_id + "/update" ,
-              { body: prefixAndSparqlUpdate },
+            URL, {
+							headers: {
+								"Authorization": "Basic " + new Buffer("admin:" + config.FUSEKI_PASSWORD).toString("base64")
+							},
+							body: prefixAndSparqlUpdate
+						},
 
-              function (error, response, body) {
+            function (error, response, body) {
 
-                  callback(prefixAndSparqlUpdate, error, response, body);
+							if ( !error && response && response.statusCode < 400 ) {
 
-              }
+								callback(200);
+
+							} else {
+
+								console.log("SPARQL update failed: " + prefixAndSparqlUpdate + ". Error: " + ( error ? error : "None" ) + ". Body: " + ( body ? body : "None" ) + ". Status: " + ( ( response && response.statusCode ) ? response.statusCode : "No response." ) + ".");
+								callback(400);
+
+							}
+
+            }
 
           );
 
@@ -74,21 +91,30 @@ class Util {
 
 		request.get(
 
-			'http://localhost:' + config.JENA_PORT + '/' + dataset_id + "/query?query=" + query,
+			"http://" + config.JENA_HOST + ":" + config.JENA_PORT + "/" + dataset_id + "/query?query=" + query,
 
 			function (error, response, body) {
 
-				var data = [];
+				if ( !error && response && response.statusCode == 200 ) {
 
-				var queryContainer = xmlQuery(xmlReader.parseSync(body));
+					var data = [];
 
-				queryContainer.find('binding').each(function(binding) {
+					var queryContainer = xmlQuery(xmlReader.parseSync(body));
 
-					data.push(binding.children[0].children[0].value);
+					queryContainer.find('binding').each(function(binding) {
 
-				});
+						data.push(binding.children[0].children[0].value);
 
-				callback(query, error, response, body, data);
+					});
+
+					callback(data);
+
+				} else {
+
+					console.log("SPARQL query failed: " + query + ". Error: " + error + ". Body: " + body + ". Status: " + ( ( response && response.statusCode ) ? response.statusCode : "No response." ) + ".");
+					callback(null);
+
+				}
 
 			}
 
@@ -140,7 +166,7 @@ class Util {
 		}
 		`;
 
-		this.sparqlQuery(dataset_id, query, function(sparqlQuery, error, response, body, data) {
+		this.sparqlQuery(dataset_id, query, function(data) {
 
 			callback(Util.nList(data, 3));
 
@@ -150,18 +176,18 @@ class Util {
 
 	static sparqlSubject(dataset_id, subject, callback) {
 
-			var query = `
-			SELECT ?p ?o
-			WHERE {
-			  GRAPH ?g { <`+ subject  +`> ?p ?o }
-			}
-			`;
+		var query = `
+		SELECT ?p ?o
+		WHERE {
+		  GRAPH ?g { <`+ subject  +`> ?p ?o }
+		}
+		`;
 
-			this.sparqlQuery(dataset_id, query, function(sparqlQuery, error, response, body, data) {
+		this.sparqlQuery(dataset_id, query, function(data) {
 
-		    callback(Util.nList(data, 2));
+	    callback(Util.nList(data, 2));
 
-			});
+		});
 
 	}
 
@@ -178,19 +204,32 @@ class Util {
 
 	}
 
-	static callPrologServer(path, data, res) {
+	static callPrologServer(path, data, res, callback) {
+
+		const URL = "http://" + config.PROLOG_HOST + ":" + config.PROLOG_PORT + "/" + path;
+		logger.debug("Calling Prolog server at: " + URL);
 
 	  request.post(
 
-      'http://localhost:' + config.PROLOG_PORT + "/" + path,
-        { headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+      	URL, {
+				headers: {
+					"Authorization": "Basic " + new Buffer("admin:" + config.FUSEKI_PASSWORD).toString("base64"),
+          "Content-Type": "application/x-www-form-urlencoded"
         },
         body: data },
 
       function (error, response, body) {
 
-          res.send(response.body);
+				if ( !error && response && response.statusCode < 400 && body ) {
+
+					callback(body);
+
+				} else {
+
+					logger.error("Failed to call prolog server with path: " + path + ". Data: " + data + ". Error: " + error + ". Body: " + ( body ? body : "None" ) + ". Status: " + ( ( response && response.statusCode ) ? response.statusCode : "No response." ) + ".");
+					callback(null);
+
+				}
 
       }
 

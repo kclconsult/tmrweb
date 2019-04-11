@@ -10,40 +10,26 @@ router.post('/create', function(req, res, next) {
 
   request.post({
 
-      url: 'http://localhost:' + config.JENA_PORT + "/$/datasets?dbType=tdb&dbName=CIG-" + req.body.guideline_group_id,
-      headers: {
-        Authorization: "Basic " + new Buffer("admin:" + config.FUSEKI_PASSWORD).toString("base64")
-      },
-
+    url: "http://" + config.JENA_HOST + ":" + config.JENA_PORT + "/$/datasets?dbType=tdb&dbName=CIG-" + req.body.guideline_group_id,
+    headers: {
+      Authorization: "Basic " + new Buffer("admin:" + config.FUSEKI_PASSWORD).toString("base64")
     },
 
-    function (error, response, body) {
+  }, function (error, response, body) {
 
-      const description = `:CIG-` + req.body.guideline_group_id + ` {
-          :CIG-` + req.body.guideline_group_id + ` rdf:type vocab:ClinicalGuideline, owl:NamedIndividual ;
-              rdfs:label "` + req.body.description + `"@en .
-      }`;
+    const description = `:CIG-` + req.body.guideline_group_id + ` {
+        :CIG-` + req.body.guideline_group_id + ` rdf:type vocab:ClinicalGuideline, owl:NamedIndividual ;
+            rdfs:label "` + req.body.description + `"@en .
+    }`;
 
-      utils.sparqlUpdate("CIG-" + req.body.guideline_group_id, description, config.INSERT, function(sparqlUpdate, error, response, body) {
+    utils.sparqlUpdate("CIG-" + req.body.guideline_group_id, description, config.INSERT, function(body) {
 
-        if (!error && response.statusCode == 200) {
+      console.log(body);
+      res.sendStatus(200);
 
-          console.log(body);
+    });
 
-        } else {
-
-          console.log(sparqlUpdate);
-          console.log(response.body);
-
-        }
-
-        res.end();
-
-      });
-
-    }
-
-  );
+  });
 
 });
 
@@ -84,20 +70,9 @@ function action(req, res, insertOrDelete) {
             prov:wasAttributedTo  :` + req.body.author + ` .
   }`
 
-  utils.sparqlUpdate("CIG-" + req.body.guideline_group_id, head + " " + body + " " + provenance + " " + publication, insertOrDelete, function(sparqlUpdate, error, response, body) {
+  utils.sparqlUpdate("CIG-" + req.body.guideline_group_id, head + " " + body + " " + provenance + " " + publication, insertOrDelete, function(status) {
 
-    if (!error && response.statusCode == 200) {
-
-      console.log(body);
-
-    } else {
-
-      console.log(sparqlUpdate);
-      console.log(response.body);
-
-    }
-
-    res.end();
+    res.sendStatus(status);
 
   });
 
@@ -124,7 +99,15 @@ router.post('/drug/get', function(req, res, next) {
       'guideline_id' : req.body.guideline_id
   });
 
-  utils.callPrologServer("drug", postData, res);
+  utils.callPrologServer("drug", postData, res, function(data) {
+
+    if (!data) {
+      res.sendStatus(400);
+    } else {
+      res.send(data);
+    }
+
+  });
 
 });
 

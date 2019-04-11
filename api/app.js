@@ -1,47 +1,51 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const logger = require('./config/winston');
 
-// Environment variables
+// Environment constiables
 require('dotenv').config()
 
-var guidelineRouter = require('./routes/guideline');
-var drugRouter = require('./routes/drug');
-var beliefRouter = require('./routes/belief');
-var transitionRouter = require('./routes/transition');
-var guidelinesRouter = require('./routes/guidelines');
-var drugsRouter = require('./routes/drugs');
-var beliefsRouter = require('./routes/beliefs');
-var transitionsRouter = require('./routes/transitions');
+const guidelineRouter = require('./routes/guideline');
+const drugRouter = require('./routes/drug');
+const beliefRouter = require('./routes/belief');
+const transitionRouter = require('./routes/transition');
+const guidelinesRouter = require('./routes/guidelines');
+const drugsRouter = require('./routes/drugs');
+const beliefsRouter = require('./routes/beliefs');
+const transitionsRouter = require('./routes/transitions');
 
-var app = express();
+const app = express();
+const router = express.Router();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+app.use(morgan('combined', { stream: logger.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', function(req, res, next) {
+router.get('/', function(req, res, next) {
 
   res.end();
 
 });
 
-app.use('/guideline', guidelineRouter);
-app.use('/drug', drugRouter);
-app.use('/belief', beliefRouter);
-app.use('/transition', transitionRouter);
-app.use('/guidelines', guidelinesRouter);
-app.use('/drugs', drugsRouter);
-app.use('/beliefs', beliefsRouter);
-app.use('/transitions', transitionsRouter);
+router.use('/guideline', guidelineRouter);
+router.use('/drug', drugRouter);
+router.use('/belief', beliefRouter);
+router.use('/transition', transitionRouter);
+router.use('/guidelines', guidelinesRouter);
+router.use('/drugs', drugsRouter);
+router.use('/beliefs', beliefsRouter);
+router.use('/transitions', transitionsRouter);
+
+app.use('/tmrweb', router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -54,6 +58,8 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+  
   // render the error page
   res.status(err.status || 500);
   res.render('error');
