@@ -70,7 +70,7 @@ class Util {
 
 							} else {
 
-								console.log("SPARQL update failed: " + prefixAndSparqlUpdate + ". Error: " + ( error ? error : "None" ) + ". Body: " + ( body ? body : "None" ) + ". Status: " + ( ( response && response.statusCode ) ? response.statusCode : "No response." ) + ".");
+								console.log("SPARQL update failed at: " + URL + " Query: " + prefixAndSparqlUpdate + ". Error: " + ( error ? error : "None" ) + ". Body: " + ( body ? body : "None" ) + ". Status: " + ( ( response && response.statusCode ) ? response.statusCode : "No response." ) + ".");
 								callback(400);
 
 							}
@@ -207,7 +207,6 @@ class Util {
 	static callPrologServer(path, data, res, callback) {
 
 		const URL = "http://" + config.PROLOG_HOST + ":" + config.PROLOG_PORT + "/" + path;
-		logger.debug("Calling Prolog server at: " + URL);
 
 	  request.post(
 

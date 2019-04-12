@@ -42,6 +42,24 @@ function administrationSubsumption(id) {
 
 }
 
+// Specify multiple drug subsumptions via the administrationOf triple.
+function administrationSubsumptions(subsumedDrugIds) {
+
+  var administrationSubsumption = ` ;
+  vocab:subsumes  `;
+
+  subsumedDrugIds.split(",").forEach(function(drugId) {
+
+    administrationSubsumption += (`:ActAdminister` + drugId.trim() + `, `);
+
+  });
+
+  administrationSubsumption = administrationSubsumption.substring(0, administrationSubsumption.length - 2);
+
+  return administrationSubsumption;
+
+}
+
 function individualAction(req, res, insertOrDelete, callback) {
 
   // Individual drug format:
@@ -124,15 +142,18 @@ function categoryAction(req, res, insertOrDelete, callback) {
 
   // Drug category format:
   var drugCategory = type("Cat", req.body.drug_category_id)
+  var drugCategoryAdministration = administration("Cat", req.body.drug_category_id);
 
   if ( req.body.subsumed_drug_ids ) {
 
     // Assumes IDs are for drugs, thus does not currently allow the specification of categories subsuming categories.
     drugCategory += directSubsumptions("T", req.body.subsumed_drug_ids);
+    drugCategoryAdministration += administrationSubsumptions(req.body.subsumed_drug_ids);
 
     if ( !req.body.grouping_criteria_ids ) {
 
       drugCategory += ` .`
+      drugCategoryAdministration += ` .`
 
     }
 
@@ -147,10 +168,9 @@ function categoryAction(req, res, insertOrDelete, callback) {
   if ( !req.body.subsumed_drug_ids && !req.body.grouping_criteria_ids ) {
 
     drugCategory += ` .`
+    drugCategoryAdministration += ` .`
 
   }
-
-  const drugCategoryAdministration = administration("Cat", req.body.drug_category_id) + ` .`;
 
   console.log(drugCategory);
   console.log(drugCategoryAdministration);
