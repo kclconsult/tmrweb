@@ -19,7 +19,7 @@ function postDrugs(drugData, res, insertOrDelete, callback) {
 function type(drugOrCategory, id) {
 
   return drug = `:Drug` + drugOrCategory + id + ` rdf:type vocab:DrugType, owl:NamedIndividual ;
-            rdfs:label "` + id + `"@en .`
+            rdfs:label "` + id + `"@en `
 
 }
 
@@ -45,7 +45,7 @@ function administrationSubsumption(id) {
 function individualAction(req, res, insertOrDelete, callback) {
 
   // Individual drug format:
-  const drug = type("T", req.body.drug_id)
+  const drug = type("T", req.body.drug_id) + ` .`
 
   var drugAdministration = administration("T", req.body.drug_id);
 
@@ -150,7 +150,10 @@ function categoryAction(req, res, insertOrDelete, callback) {
 
   }
 
-  const drugCategoryAdministration = administration("Cat", req.body.drug_category_id);
+  const drugCategoryAdministration = administration("Cat", req.body.drug_category_id) + ` .`;
+
+  console.log(drugCategory);
+  console.log(drugCategoryAdministration);
 
   postDrugs(drugCategory + " " + drugCategoryAdministration, res, insertOrDelete, callback);
 

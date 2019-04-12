@@ -32,7 +32,8 @@ services:
       - 1234:1234
 
   fuseki:
-    image: stain/jena-fuseki
+    build:
+      context: fuseki
     volumes:
       - drug_volume:/fuskei
     environment:
