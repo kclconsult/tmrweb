@@ -97,6 +97,8 @@ function directSubsumptions(drugOrCategory, subsumedDrugIds) {
 
   drugSubsumption = drugSubsumption.substring(0, drugSubsumption.length - 2);
 
+  return drugSubsumption;
+
 }
 
 function groupingCriteria(groupingCriteriaIds) {
@@ -113,6 +115,8 @@ function groupingCriteria(groupingCriteriaIds) {
   groupingCriteria = groupingCriteria.substring(0, groupingCriteria.length - 2);
 
   groupingCriteria += ` .`
+
+  return groupingCriteria;
 
 }
 

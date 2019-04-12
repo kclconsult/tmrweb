@@ -98,6 +98,8 @@ Add the following information to this environment file using a text editor:
 
 ```
 FUSEKI_PASSWORD="[Password]"
+JENA_HOST=localhost
+PROLOG_HOST=localhost
 ```
 
 Where [Password] is the password you created for the triple store earlier.
@@ -135,6 +137,8 @@ docker-compose up
 ```
 docker-compose up --scale proxy=0
 ```
+
+Run `setup.py` to create the required Fuseki datasets.
 
 Different docker-compose files exist to accomodate different service configurations.
 
