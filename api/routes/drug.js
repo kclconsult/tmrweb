@@ -119,18 +119,16 @@ function groupingCriteria(groupingCriteriaIds) {
 function categoryAction(req, res, insertOrDelete, callback) {
 
   // Drug category format:
-  const drugCategory = type("Cat", req.body.drug_category_id)
-
-  var drugCategoryAdministration = administration("Cat", req.body.drug_category_id);
+  var drugCategory = type("Cat", req.body.drug_category_id)
 
   if ( req.body.subsumed_drug_ids ) {
 
     // Assumes IDs are for drugs, thus does not currently allow the specification of categories subsuming categories.
-    drugCategoryAdministration += directSubsumptions("T", req.body.subsumed_drug_ids);
+    drugCategory += directSubsumptions("T", req.body.subsumed_drug_ids);
 
     if ( !req.body.grouping_criteria_ids ) {
 
-      drugCategoryAdministration += ` .`
+      drugCategory += ` .`
 
     }
 
@@ -138,15 +136,17 @@ function categoryAction(req, res, insertOrDelete, callback) {
 
   if ( req.body.grouping_criteria_ids ) {
 
-    drugCategoryAdministration += groupingCriteria(req.body.grouping_criteria_ids);
+    drugCategory += groupingCriteria(req.body.grouping_criteria_ids);
 
   }
 
   if ( !req.body.subsumed_drug_ids && !req.body.grouping_criteria_ids ) {
 
-    drugCategoryAdministration += ` .`
+    drugCategory += ` .`
 
   }
+
+  const drugCategoryAdministration = administration("Cat", req.body.drug_category_id);
 
   postDrugs(drugCategory + " " + drugCategoryAdministration, res, insertOrDelete, callback);
 
