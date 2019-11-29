@@ -2,7 +2,7 @@
 
 A sample re-implementation of a guideline processing tool under a defined microservice architecture.
 
-Cite as _[A Microservice Architecture for the Design of Computer-Interpretable Guideline Processing Tools](https://kclpure.kcl.ac.uk/portal/files/114975299/08828_paper_v2.pdf). Chapman, Martin and Curcin, Vasa. 2019._
+Cite as _[A Microservice Architecture for the Design of Computer-Interpretable Guideline Processing Tools](https://kclpure.kcl.ac.uk/portal/files/114975299/08828_paper_v2.pdf). Chapman, Martin and Curcin, Vasa. IEEE EUROCON 2019-18th International Conference on Smart Technologies. 2019._
 
 ## Getting Started
 
