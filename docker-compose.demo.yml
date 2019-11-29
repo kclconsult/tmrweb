@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+
+  proxy:
+    build:
+      context: proxy
+    depends_on:
+      - webapp
+    command: ["./wait-for-it.sh", "--timeout=0", "drug-interaction_webapp_1:8888", "--", "nginx", "-g", "daemon off;"]
+    tty: true
+    ports:
+      - 8888:443
+
+  webapp:
+    build:
+      context: api
+    depends_on:
+      - backend
+    environment:
+      - JENA_HOST=drug-interaction_fuseki_1
+      - PROLOG_HOST=drug-interaction_backend_1
+
+  backend:
+    build:
+      context: backend
+    depends_on:
+      - fuseki
+    environment:
+      - FUSEKI_HOST_PORT=http://drug-interaction_fuseki_1:3030/
+    ports:
+      - 1234:1234
+
+  fuseki:
+    build:
+      context: fuseki
+    volumes:
+      - drug_volume:/fuskei
+    environment:
+      - ADMIN_PASSWORD=Izf3TaF0UI8oj7f
+    ports:
+      - 3030:3030
+
+volumes:
+  drug_volume:

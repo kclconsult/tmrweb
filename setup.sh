@@ -1,0 +1,3 @@
+docker-compose exec fuseki curl 'http://localhost:3030/$/datasets' -H "Authorization: Basic $(echo -n admin:Izf3TaF0UI8oj7f | base64)" -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data 'dbName=drugs&dbType=tdb'
+docker-compose exec fuseki curl 'http://localhost:3030/$/datasets' -H "Authorization: Basic $(echo -n admin:Izf3TaF0UI8oj7f | base64)" -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data 'dbName=transitions&dbType=tdb'
+docker-compose exec fuseki curl 'http://localhost:3030/$/datasets' -H "Authorization: Basic $(echo -n admin:Izf3TaF0UI8oj7f | base64)" -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data 'dbName=beliefs&dbType=tdb'
