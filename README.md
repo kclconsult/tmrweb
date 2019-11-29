@@ -1,4 +1,8 @@
-# Drug Interaction Middleware
+# Guideline Interaction
+
+A sample re-implementation of a guideline processing tool under a defined microservice architecture.
+
+Cite as _[A Microservice Architecture for the Design of Computer-Interpretable Guideline Processing Tools](https://kclpure.kcl.ac.uk/portal/files/114975299/08828_paper_v2.pdf). Chapman, Martin and Curcin, Vasa. 2019._
 
 ## Getting Started
 
@@ -138,7 +142,7 @@ docker-compose up
 docker-compose up --scale proxy=0
 ```
 
-Run `setup.py` to create the required Fuseki datasets.
+Run `setup.sh` to create the required Fuseki datasets.
 
 Different docker-compose files exist to accomodate different service configurations.
 
