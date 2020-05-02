@@ -37,7 +37,7 @@ Navigate to http://localhost:3030, login with the username `admin` and the passw
 Clone this repository:
 
 ```
-git clone https://github.com/consult-kcl/drug-interaction
+git clone https://github.com/martinchapman/drug-interaction
 ```
 
 Change into the backend directory:
@@ -49,7 +49,7 @@ cd backend
 Clone the TMR repository:
 
 ```
-git clone https://github.com/consult-kcl/tmr.git
+git clone https://github.com/martinchapman/tmr.git
 ```
 
 Enter Prolog environment, and include address of Fuseki server as environment variable:
