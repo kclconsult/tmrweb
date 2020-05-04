@@ -1,6 +1,6 @@
 # TMRWeb
 
-Store clinical guidelines and determine their interactions.
+Store clinical guidelines and determine their interactions. [View an example](api/).
 
 Serves as an example of a re-implementated guideline processing tool ([TMR](https://github.com/veruskacz/CG-RDF)) under a defined microservice architecture.
 
