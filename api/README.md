@@ -74,7 +74,7 @@ To define a drug, we might start by representing a general category of
 drugs. Here, we create a dummy category *Thiazide* for *Diuretic*:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/drug/category/add \
+      --url https://kclhi.org/tmrweb/drug/category/add \
       --header `Content-Type: application/x-www-form-urlencoded'\
       --data `drug_category_id=Thiazide`
 
@@ -91,14 +91,14 @@ relationship to other drugs (in this case not one we have priorly
 represented):
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/drug/individual/add \
+      --url https://kclhi.org/tmrweb/drug/individual/add \
       --data`drug_id=Thiazide&drug_category_id=Thiazide&subsumed_drug_id=Bendroflumethiazide'
 
 We follow a similar approach for *Diuretic2*, which pertains to the drug
 Ibuprofen and in this instance does not have a category:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/drug/individual/add \
+      --url https://kclhi.org/tmrweb/drug/individual/add \
       --data drug_id=Ibuprofen
 
 We have now defined the drugs shown in Figure
@@ -116,11 +116,11 @@ can also add additional information such as the clinical codes that
 might be used to reference such states in an EHR:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/transition/situation/add \
+      --url https://kclhi.org/tmrweb/transition/situation/add \
       --data`situation_id=NormalBP&situation_label=Blood%20pressure%20is%20normal'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/transition/situation/add \
+      --url https://kclhi.org/tmrweb/transition/situation/add \
       --data`situation_id=HighBP&situation_label=Blood%20pressure%20is%20high&umlsCodes=C0020538%2C%20C3843080'
 
 Transition
@@ -131,11 +131,11 @@ specifically moving between different blood pressure levels, as shown in
 Figure [1](#HT){reference-type="ref" reference="HT"}.
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/transition/add \
+      --url https://kclhi.org/tmrweb/transition/add \
       --data`transition_id=IncreaseBP&prior_situation_id=NormalBP&post_situation_id=HighBP'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/transition/add \
+      --url https://kclhi.org/tmrweb/transition/add \
       --data`transition_id=DecreaseBP&prior_situation_id=HighBP&post_situation_id=NormalBP'
 
 Beliefs
@@ -149,11 +149,11 @@ administering a drug, for *Diuretic* and *Diuretic2* (Figure
 [1](#HT){reference-type="ref" reference="HT"}):
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/belief/add \
+      --url https://kclhi.org/tmrweb/belief/add \
       --data`belief_id=ThiazideBP&drug_cause_id=Thiazide&transition_effect_id=DecreaseBP&strength=L1&frequency=always&author=martin'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/belief/add \
+      --url https://kclhi.org/tmrweb/belief/add \
       --data`belief_id=IbuprofenBP&drug_cause_id=Ibuprofen&transition_effect_id=IncreaseBP&strength=L1&frequency=always&author=martin'
 
 We can add additional information, such as a code to indicate the
@@ -170,7 +170,7 @@ of this information together.
 First, we supply some details for our guideline group[^2]:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guideline/create \
+      --url https://kclhi.org/tmrweb/guideline/create \
       --data`guideline_group_id=HT&description=CIG%20for%20hypertension'
 
 Then, we specify information for *Diuretic*, including the remaining
@@ -179,13 +179,13 @@ such as the guideline name, and the nature of the associated
 recommendation (should or should not):
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guideline/add \
+      --url https://kclhi.org/tmrweb/guideline/add \
       --data`guideline_group_id=HT&guideline_id=Diuretic&drug_id=Thiazide&belief_id=ThiazideBP&label=Reduce%20blood%20pressure&should_or_shouldnot=should&author=martin'
 
 *Diuretic2* is also defined accordingly:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guideline/add \
+      --url https://kclhi.org/tmrweb/guideline/add \
       --data`guideline_group_id=HT&guideline_id=Diuretic2&drug_id=Ibuprofen&belief_id=IbuprofenBP&label=Avoid%20high%20blood%20pressure&should_or_shouldnot=should-not&author=martin'
 
 Example interrogation process (single interaction)
@@ -195,7 +195,7 @@ Now that we have our guideline set represented, we can interrogate it in
 order to find any interactions in the following way:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guidelines/interactions \
+      --url https://kclhi.org/tmrweb/guidelines/interactions \
       --data guideline_group_id=HT
 
 This gives us the following response:
@@ -218,7 +218,7 @@ we can first ask which drugs each guideline in the interaction relates
 to:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guidelines/drug \
+      --url https://kclhi.org/tmrweb/guidelines/drug \
       --data `guideline_id=http%3A%2F%2Fanonymous.org%2Fdata%2FRecHT-Diuretic&guideline_group_id=HT'
 
 ``` {frame="none"}
@@ -226,7 +226,7 @@ http://anonymous.org/data/DrugCatThiazide
 ```
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guidelines/drug \
+      --url https://kclhi.org/tmrweb/guidelines/drug \
       --data `guideline_id=http%3A%2F%2Fanonymous.org%2Fdata%2FRecHT-Diuretic2&guideline_group_id=HT'
 
 ``` {frame="none"}
@@ -237,7 +237,7 @@ We can then ask what the effects of these drugs are, and thus learn why
 they are considered alternative actions:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/drugs/effects \
+      --url https://kclhi.org/tmrweb/drugs/effects \
       --data drug_full_id=http%3A%2F%2Fanonymous.org%2Fdata%2FDrugCatThiazide
 
 ``` {frame="none"}
@@ -270,45 +270,45 @@ the new transitions and beliefs associated with this guideline
 (Ibuprofen is already modelled):
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/transition/situation/add \
+      --url https://kclhi.org/tmrweb/transition/situation/add \
       --data `situation_id=PatientHasNoPain&situation_label=Patient%20has%20no%20pain'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/transition/situation/add \
+      --url https://kclhi.org/tmrweb/transition/situation/add \
       --data `situation_id=PatientHasPain&situation_label=Patient%20has%20pain&umlsCodes=C0030193'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/transition/add \
+      --url https://kclhi.org/tmrweb/transition/add \
       --data `transition_id=Painkiller&prior_situation_id=PatientHasPain&post_situation_id=PatientHasNoPain'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/belief/add \
+      --url https://kclhi.org/tmrweb/belief/add \
       --data `belief_id=IbuprofenPain&drug_cause_id=Ibuprofen&transition_effect_id=Painkiller&strength=L1&frequency=always&author=martin'
 
 Next, we again model *Diuretic* and *Diuretic2* as part of a new
 guideline group along with our new guideline *Painkiller*:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guideline/create \
+      --url https://kclhi.org/tmrweb/guideline/create \
       --data `guideline_group_id=HT-OA&description=CIG%20for%20hypertension%20and%20osteoarthritis'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guideline/add \
+      --url https://kclhi.org/tmrweb/guideline/add \
       --data `guideline_group_id=HT-OA&guideline_id=Diuretic&drug_id=Thiazide&belief_id=ThiazideBP&label=Reduce%20blood%20pressure&should_or_shouldnot=should&author=martin'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guideline/add \
+      --url https://kclhi.org/tmrweb/guideline/add \
       --data `guideline_group_id=HT-OA&guideline_id=Diuretic2&drug_id=Ibuprofen&belief_id=IbuprofenBP&label=Avoid%20high%20blood%20pressure&should_or_shouldnot=should-not&author=martin'
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guideline/add \
+      --url https://kclhi.org/tmrweb/guideline/add \
       --data `guideline_group_id=HT-OA&guideline_id=Painkiller&drug_id=Ibuprofen&belief_id=IbuprofenPain&label=Reduce%20pain&should_or_shouldnot=should&author=martin'
 
 We can now interrogate these guidelines in order to identify
 interactions:
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guidelines/interactions \
+      --url https://kclhi.org/tmrweb/guidelines/interactions \
       --data guideline_group_id=HT-OA
 
 ``` {frame="none"}
@@ -329,7 +329,7 @@ we can further infer that *Thiazide* (Diuretic) and *Ibuprofen*
 (Painkiller) should not be prescribed together.
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guidelines/drug \
+      --url https://kclhi.org/tmrweb/guidelines/drug \
       --data `guideline_id=http%3A%2F%2Fanonymous.org%2Fdata%2FRecHT-Diuretic&guideline_group_id=HT-OA'
 
 ``` {frame="none"}
@@ -337,7 +337,7 @@ http://anonymous.org/data/DrugCatThiazide
 ```
 
     curl --request POST \
-      --url https://consult.hscr.kcl.ac.uk/tmrweb/guidelines/drug \
+      --url https://kclhi.org/tmrweb/guidelines/drug \
       --data `guideline_id=http%3A%2F%2Fanonymous.org%2Fdata%2FRecHT-OA-Painkiller&guideline_group_id=HT-OA'
 
 ``` {frame="none"}

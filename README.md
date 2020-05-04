@@ -1,8 +1,10 @@
-# Guideline Interaction
+# TMRWeb
 
-A sample re-implementation of a guideline processing tool under a defined microservice architecture.
+Store clinical guidelines and determine their interactions. [View an example](api/).
 
-Cite as _[A Microservice Architecture for the Design of Computer-Interpretable Guideline Processing Tools](https://kclpure.kcl.ac.uk/portal/files/114975299/08828_paper_v2.pdf). Chapman, Martin and Curcin, Vasa. 2019._
+Serves as an example of a re-implementated guideline processing tool ([TMR](https://github.com/veruskacz/CG-RDF)) under a defined microservice architecture.
+
+Cite as _[A Microservice Architecture for the Design of Computer-Interpretable Guideline Processing Tools](https://kclpure.kcl.ac.uk/portal/files/114975299/08828_paper_v2.pdf). Chapman, Martin and Curcin, Vasa. IEEE EUROCON 2019-18th International Conference on Smart Technologies. 2019._
 
 ## Getting Started
 
@@ -35,7 +37,7 @@ Navigate to http://localhost:3030, login with the username `admin` and the passw
 Clone this repository:
 
 ```
-git clone https://github.com/consult-kcl/drug-interaction
+git clone https://github.com/martinchapman/drug-interaction
 ```
 
 Change into the backend directory:
@@ -47,7 +49,7 @@ cd backend
 Clone the TMR repository:
 
 ```
-git clone https://github.com/consult-kcl/tmr.git
+git clone https://github.com/martinchapman/tmr.git
 ```
 
 Enter Prolog environment, and include address of Fuseki server as environment variable:

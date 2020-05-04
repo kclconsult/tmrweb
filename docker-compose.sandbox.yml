@@ -2,17 +2,6 @@ version: "3.7"
 
 services:
 
-  proxy:
-    build:
-      context: proxy
-    depends_on:
-      - webapp
-    command: ["./wait-for-it.sh", "--timeout=0", "tmrweb_webapp_1:8888", "--", "nginx", "-g", "daemon off;"]
-    tty: true
-    ports:
-      - 8888:443
-    restart: unless-stopped
-
   webapp:
     build:
       context: api
@@ -30,8 +19,6 @@ services:
       - fuseki
     environment:
       - FUSEKI_HOST_PORT=http://tmrweb_fuseki_1:3030/
-    ports:
-      - 1234:1234
     restart: unless-stopped
 
   fuseki:
@@ -41,9 +28,12 @@ services:
       - drug_volume:/fuskei
     environment:
       - ADMIN_PASSWORD=Izf3TaF0UI8oj7f
-    ports:
-      - 3030:3030
     restart: unless-stopped
 
 volumes:
   drug_volume:
+
+networks:
+  default:
+    external:
+      name: hi_default
