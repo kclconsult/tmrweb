@@ -6,6 +6,10 @@ Serves as an example of a re-implementated guideline processing tool ([TMR](http
 
 Cite as _[A Microservice Architecture for the Design of Computer-Interpretable Guideline Processing Tools](https://kclpure.kcl.ac.uk/portal/files/114975299/08828_paper_v2.pdf). Chapman, Martin and Curcin, Vasa. IEEE EUROCON 2019-18th International Conference on Smart Technologies. 2019._
 
+#### Deployed at
+
+<img src="imperial.svg" width="150">
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
@@ -152,13 +156,9 @@ Different docker-compose files exist to accomodate different service configurati
 
 To use custom certificates for communication with this service's proxy, reference them in the proxy's [Dockerfile](proxy/Dockerfile). The [gen-domain-cert](proxy/certs/gen-domain-cert.sh) script can be used to generate custom certs (e.g. 'maximoff.crt') using a CA root cert (e.g. 'consult.crt') and accompanying keys. If distributing an image outside of an organisation, edit [Dockerfile](proxy/Dockerfile) and [docker-compose](docker-compose.yml) to mount a volume on the host containing the certs instead, so that images are not transferred with the certs inside then.
 
-## Running the tests
-
---
-
 ## Built With
 
---
+* [Express](https://expressjs.com/) - Web framework.
 
 ## Contributing
 
